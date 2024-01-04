@@ -30,7 +30,9 @@ const Login = () => {
         },
       });
       if (response.status === 400) {
-        setModalContent('Invalid Credentials, Contact Us if already registered');
+        setModalContent(
+          'Invalid Credentials, Contact Us if already registered'
+        );
         setShowModal(true);
         return;
       }
@@ -65,8 +67,8 @@ const Login = () => {
           >
             <div className='flex flex-col content-center gap-5 self-stretch lg:flex-row'>
               <Textbox
-                label='Username:'
-                placeholder='Enter Your Username'
+                label='Username&nbsp;/&nbsp;email:'
+                placeholder='Enter Username or email'
                 name='username'
                 type='text'
                 value={formData.username}

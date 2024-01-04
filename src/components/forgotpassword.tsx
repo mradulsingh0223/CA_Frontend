@@ -37,8 +37,6 @@ const ForgotPassword = () => {
           'Content-Type': 'application/json',
         },
       });
-      console.log(JSON.stringify(mergedData));
-      console.log(response.status);
 
       if (response.status === 404) {
         setModalContent('Invalid OTP');
@@ -63,8 +61,6 @@ const ForgotPassword = () => {
           'Content-Type': 'application/json',
         },
       });
-
-      console.log(JSON.stringify(formData));
 
       if (response.status === 404) {
         setModalContent('Invalid E-mail');

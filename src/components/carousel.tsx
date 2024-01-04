@@ -53,8 +53,8 @@ const txtse = text10 + '\n\n' + text11 + '\n\n' + text12;
 const incentiveLogoPaths: [string, string][] = [
   ['/SE.svg', txtse],
   ['/EaseMyTripLogo.svg', txtease],
-  ['/Languify.png', txtl],
-  ['/wayspire.png', txtw],
+  ['/Languify.webp', txtl],
+  ['/wayspire.webp', txtl],
   ['TechnexLogo.svg', textt],
 ];
 

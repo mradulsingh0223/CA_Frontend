@@ -18,9 +18,8 @@ export default async function handler(
 
       if (response.ok) {
         const tasks = await response.json();
-        console.log('Tasks recieved');
-        console.log(tasks);
-        res.status(200).json(tasks); // Forward the response from the API
+        res.status(200).json(tasks);
+        // Forward the response from the API
       } else {
         res.status(response.status).json({ message: 'Failed to fetch tasks' });
       }

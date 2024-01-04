@@ -17,9 +17,11 @@ interface Props {
   description: string;
   title: string;
   taskNumber: string;
-  taskID: string;
+  taskID: number;
   month: string;
   activeTab: string;
+  comment: string;
+  incentives: string;
 }
 
 const Cards: React.FC<Props> = ({
@@ -31,6 +33,8 @@ const Cards: React.FC<Props> = ({
   taskID,
   month,
   activeTab,
+  comment,
+  incentives,
 }) => {
   const [isUploaded, setIsUploaded] = useState(false);
   const [buttonText, setButtonText] = useState('Upload');
@@ -45,13 +49,6 @@ const Cards: React.FC<Props> = ({
   };
 
   const handleSubmit = async () => {
-    // console.log('Selected File:', file);
-    // console.log('Selected File Name:', file.name);
-    // setTimeout(() => {
-    //   setIsUploaded(true);
-    //   setButtonText('Uploaded');
-    // }, 2000);
-
     try {
       const response = await fetch(
         `https://ca-backend-qknd.onrender.com/tasks/submit/${taskID}/`,
@@ -67,19 +64,16 @@ const Cards: React.FC<Props> = ({
       if (response.status === 201) {
         setModalContent('Task Submitted Successfully');
         setShowModal(true);
-        console.log('Uploaded');
         setIsUploaded(true);
         setButtonText('Uploaded');
         setDropdown(false);
       } else if (response.status === 400) {
         setModalContent('Invalid Link or Task Already Submitted');
         setShowModal(true);
-        console.log('Task already submitted');
         setDropdown(false);
       } else if (response.status === 401) {
         setModalContent('Unauthorized');
         setShowModal(true);
-        console.log('Unauthorized');
         setDropdown(false);
       }
     } catch (error) {
@@ -134,15 +128,14 @@ const Cards: React.FC<Props> = ({
             )}
           </div>
           <div className='w-2/3'>
-            <p className='mt-2 text-left text-xs md:text-sm'>
-              Month:{month} | Task:{taskNumber}
-            </p>
             <p className='text-left font-bold md:text-xl lg:text-2xl'>
               {title}
             </p>
             <p className='text-left text-xs md:text-sm'>{description}</p>
             <div className='flex justify-between'>
-              <p className='text-left text-xs md:text-sm'>Expires on: {date}</p>
+              <p className='text-left text-xs md:text-sm'>
+                Expires on: {DDMMYYYY(date)}
+              </p>
               <p className='text-left text-xs md:text-sm'>Points: {points}</p>
             </div>
             <div className='flex items-center justify-between'>
@@ -214,38 +207,57 @@ const Cards: React.FC<Props> = ({
         <Menu>
           <MenuButton
             as={Button}
-            leftIcon={<ChevronDownIcon />}
-            className='absolute bottom-0 right-0'
-          ></MenuButton>
+            rightIcon={<ChevronDownIcon />}
+            className='absolute bottom-0 left-0'
+          >
+            {' '}
+            {activeTab === 'live' || activeTab === 'completed'
+              ? 'Incentives'
+              : 'Comments'}{' '}
+          </MenuButton>
           <MenuList className='z-10'>
             <MenuItem
               minH='48px'
               maxW='350px'
               className='menuItem flex-shrink-1 flex bg-[#A81F25] p-[10px] md:w-1/2 lg:w-1/3'
             >
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel
+              {activeTab === 'live' || activeTab === 'completed'
+                ? incentives
+                  ? incentives
+                  : 'No Incentives'
+                : comment
+                  ? comment
+                  : 'No Comments'}
             </MenuItem>
           </MenuList>
         </Menu>
         {showModal && (
-            <div
-              className='fixed inset-0 flex items-center justify-center bg-grey bg-opacity-50'
-              onClick={() => setShowModal(false)}
-            >
-              <div className='h-50 flex w-[30%] flex-col rounded-lg bg-grey p-5 shadow-lg'>
-                <p className='self-center'>{modalContent}</p>
-                <button
-                  onClick={handleModalClose}
-                  className='text-white m-4 self-center rounded-full bg-red px-4 py-2 lg:w-[50%]'
-                >
-                  Okay
-                </button>
-              </div>
+          <div
+            className='fixed inset-0 flex items-center justify-center bg-grey bg-opacity-50'
+            onClick={() => setShowModal(false)}
+          >
+            <div className='h-50 flex w-[30%] flex-col rounded-lg bg-grey p-5 shadow-lg'>
+              <p className='self-center'>{modalContent}</p>
+              <button
+                onClick={handleModalClose}
+                className='text-white m-4 self-center rounded-full bg-red px-4 py-2 lg:w-[50%]'
+              >
+                Okay
+              </button>
             </div>
-          )}
+          </div>
+        )}
       </div>
     </div>
   );
 };
+
+function DDMMYYYY(date: string) {
+  const d = new Date(date);
+  const day = d.getDate();
+  const month = d.getMonth() + 1;
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+}
 
 export default Cards;

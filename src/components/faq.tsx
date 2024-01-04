@@ -50,11 +50,22 @@ const FAQ = () => {
     <div className='bg-background'>
       <div className='relative mb-[20px] flex flex-col bg-background pl-[10px] pt-[200px]'>
         <div className=' absolute bottom-3 flex flex-col -space-y-14 ef:-space-y-16 sm:text-left md:-space-y-32 '>
-        <Box mt={pxToRem(16)} textAlign='left' width={['100%', '80%', '100%']} display='flex' flexDirection='column'
-    alignItems={'flex-start'}
-    className='-space-y-8 pb-10 ef:-space-y-20 sm:-space-y-32 lg:-space-y-36'>
-        <HeadingTexts whiteText='Faqs' bgText='Faqs' redText='' align='left' />
-</Box>
+          <Box
+            mt={pxToRem(16)}
+            textAlign='left'
+            width={['100%', '80%', '100%']}
+            display='flex'
+            flexDirection='column'
+            alignItems={'flex-start'}
+            className='-space-y-8 pb-10 ef:-space-y-20 sm:-space-y-32 lg:-space-y-36'
+          >
+            <HeadingTexts
+              whiteText='Faqs'
+              bgText='Faqs'
+              redText=''
+              align='left'
+            />
+          </Box>
         </div>
       </div>
       <div className='mb-[50px] flex flex-col md:flex-row md:justify-start md:gap-10 md:px-[120px] lg:flex-row lg:justify-start'>

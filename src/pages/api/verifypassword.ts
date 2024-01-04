@@ -6,7 +6,6 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      console.log(JSON.stringify(req.body));
       const response = await fetch(
         'https://ca-backend-qknd.onrender.com/auth/login/forgot_password/verify/',
         {

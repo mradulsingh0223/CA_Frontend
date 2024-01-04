@@ -2,24 +2,13 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Navbar from '../components/navbar';
 
 export default function LeaderboardPage() {
   return (
     <>
       {/* <Leaderboard /> */}
-      <div className='z-10 flex items-center justify-between'>
-        <Link href={'/'}>
-          <div className='-space-y-3 sm:-space-y-6'>
-            <Image
-              className='w-56 pl-1 pt-2 sm:w-72 sm:p-3'
-              src={'/technex_logo.webp'}
-              alt='technex logo'
-              width={330}
-              height={75}
-            />
-          </div>
-        </Link>
-      </div>
+      <Navbar />
       <div className='w-9/10  flex h-screen flex-col items-center justify-center'>
         <span className='text-white mb-4 text-center text-[35px] font-[900] tracking-[.75em] ef:text-[4rem] md:text-[6rem] lg:text-[4.5rem]'>
           COMING

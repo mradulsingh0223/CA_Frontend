@@ -21,8 +21,6 @@ export default async function handler(
 
       if (response.ok) {
         const submittedTasks = await response.json();
-        console.log(' Submitted Tasks recieved');
-        console.log(submittedTasks);
         res.status(200).json(submittedTasks); // Forward the response from the API
       } else {
         res

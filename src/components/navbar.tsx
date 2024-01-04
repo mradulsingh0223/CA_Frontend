@@ -192,7 +192,7 @@ const Navbar: FC = () => {
                 <MenuList>
                   <MenuItem onClick={handleProfile}>Profile</MenuItem>
                   <MenuItem onClick={handleDashboard}>Dashboard</MenuItem>
-                  {/* <MenuItem onClick={handleLeaderboard}>Leaderboard</MenuItem> */}
+                  <MenuItem onClick={handleLeaderboard}>Leaderboard</MenuItem>
                   <MenuItem
                     onClick={() => {
                       setIsLoggedIn(false);

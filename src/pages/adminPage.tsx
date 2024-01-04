@@ -27,7 +27,6 @@ function AdminPage() {
   );
 }
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-console.log(BACKEND_URL + 'admin');
 function Login({
   token,
   setToken,
@@ -51,7 +50,10 @@ function Login({
         password,
       }),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status !== 200) throw new Error('Invalid credentials');
+        return res.json();
+      })
       .then((data) => {
         setToken(data.access);
         setMessage('');

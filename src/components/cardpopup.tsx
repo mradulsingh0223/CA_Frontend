@@ -1,6 +1,5 @@
 import React from 'react';
-import { FC, useState } from 'react';
-import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react';
+import { Card, CardHeader, CardBody } from '@chakra-ui/react';
 import Image from 'next/image';
 
 type CardPopupProps = {

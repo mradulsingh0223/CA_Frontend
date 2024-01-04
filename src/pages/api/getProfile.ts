@@ -21,11 +21,9 @@ export default async function handler(
 
       if (response.ok) {
         const profile = await response.json();
-        console.log('Profile recieved');
-        console.log(profile);
         res.status(200).json(profile); // Forward the response from the API
       } else {
-        console.log('Failed to fetch');
+        console.log('Failed to fetch Profile : getProfile.ts');
         res
           .status(response.status)
           .json({ message: 'Failed to fetch Profile' });

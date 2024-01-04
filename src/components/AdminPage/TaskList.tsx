@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import styles from './TaskList.module.css';
 type Task = {
   id: number;
   title: string;
   description: string;
+  incentives: string;
   points: number;
-  deadline: Date;
+  deadline: string;
 };
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 function TaskList({ token }: { token: string | null }) {
@@ -21,22 +22,21 @@ function TaskList({ token }: { token: string | null }) {
         },
       });
       const data = await response.json();
-      console.log(data);
-      if (data.splice === undefined) {
+      if (!data || !data.sort) {
         //there has been an error as data is not an array
         setMessage(data.detail);
         setTasks([]);
       } else {
-        //sort data by dataelement.id
+        // sort data by dataelement.id
         const dataWithDeadline = data.map((task: Task) => ({
           ...task,
-          deadline: new Date(task.deadline),
+          deadline: new Date(task.deadline).toISOString(),
         }));
 
         dataWithDeadline.sort((a: Task, b: Task) =>
           a.id > b.id ? 1 : b.id > a.id ? -1 : 0
         );
-        setTasks([...dataWithDeadline]); //handles the case when data is null
+        setTasks([...dataWithDeadline]);
         setMessage(data.length + ' tasks found.');
       }
     } catch (error) {
@@ -56,7 +56,7 @@ function TaskList({ token }: { token: string | null }) {
   };
 
   return (
-    <div  className='h-[60%] overflow-x-hidden'>
+    <div className='h-[60%] overflow-x-hidden'>
       <h2>Click on update button after making changes to a task.</h2>
       <table>
         <thead>
@@ -64,6 +64,7 @@ function TaskList({ token }: { token: string | null }) {
             <th className={styles.th}>ID</th>
             <th className={styles.th}>Title</th>
             <th className={styles.th}>Description</th>
+            <th className={styles.th}>Incentives</th>
             <th className={styles.th}>Points</th>
             <th className={styles.th}>Deadline</th>
             <th className={styles.th}>Update</th>
@@ -101,6 +102,10 @@ function TaskList({ token }: { token: string | null }) {
   );
 }
 
+function taskUpdateReducer(state: Task, action: Partial<Task>): Task {
+  return { ...state, ...action };
+}
+
 function TaskItem({
   task,
   handleRefresh,
@@ -110,16 +115,14 @@ function TaskItem({
   handleRefresh: Function;
   token: string | null;
 }) {
-  const [title, setTitle] = useState<string>(task.title);
-  const [description, setDescription] = useState<string>(task.description);
-  const [points, setPoints] = useState<number>(task.points);
-  const [deadline, setDeadline] = useState<Date>(task.deadline);
+  const [displayedTask, dispatch] = useReducer<
+    React.Reducer<Task, Partial<Task>>
+  >(taskUpdateReducer, task);
 
-  let edited =
-    title !== task.title ||
-    description !== task.description ||
-    points !== task.points ||
-    deadline.getTime() !== task.deadline.getTime();
+  let edited = (Object.keys(task) as Array<keyof Task>).reduce((acc, key) => {
+    if (key == 'deadline') return acc || task[key] != displayedTask[key];
+    return acc || task[key] != displayedTask[key];
+  }, false);
 
   async function handleDeleteTask() {
     try {
@@ -133,7 +136,6 @@ function TaskItem({
       });
       if (response.ok) {
         handleRefresh();
-        console.log(response);
       }
     } catch (err) {
       console.log(err);
@@ -141,20 +143,18 @@ function TaskItem({
   }
 
   async function handleUpdateTask() {
+    let fd = new FormData();
+    for (let entry of Object.entries(displayedTask)) {
+      if (entry[0] == 'image') continue; // TODO: handle image
+      fd.append(entry[0], '' + entry[1]); // ""+entry[1] converts number|string to string
+    }
     try {
       const response = await fetch(BACKEND_URL + 'tasks/' + task.id + '/', {
         method: 'PATCH',
         headers: {
-          'content-type': 'application/json',
-          'content-length': '0',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          title,
-          description,
-          points,
-          deadline,
-        }),
+        body: fd,
       });
 
       if (response.ok) handleRefresh();
@@ -166,31 +166,41 @@ function TaskItem({
   return (
     <tr key={task.id}>
       <td className={styles.td}>{task.id}</td>
-      <td>
+      <td className={styles.td}>
         <input
           className={styles.textarea}
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={displayedTask.title}
+          onChange={(e) => dispatch({ title: e.target.value })}
         ></input>
       </td>
       <td className={styles.td}>
         <textarea
           className={styles.textarea}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          value={displayedTask.description}
+          onChange={(e) => dispatch({ description: e.target.value })}
         ></textarea>
       </td>
-      <input
-        className={styles.td}
-        type='number'
-        value={points}
-        onChange={(e) => setPoints(Number(e.target.value))}
-      ></input>
+      <td className={styles.td}>
+        <textarea
+          className={styles.textarea}
+          value={displayedTask.incentives}
+          onChange={(e) => dispatch({ incentives: e.target.value })}
+        ></textarea>
+      </td>
+      <td className={styles.td}>
+        <input
+          type='number'
+          value={displayedTask.points}
+          onChange={(e) => dispatch({ points: +e.target.value })}
+        ></input>
+      </td>
       <td className={styles.td}>
         <input
           type='date'
-          value={deadline.toISOString().split('T')[0]}
-          onChange={(e) => setDeadline(new Date(e.target.value))}
+          value={new Date(displayedTask.deadline).toISOString().split('T')[0]}
+          onChange={(e) =>
+            dispatch({ deadline: new Date(e.target.value).toISOString() })
+          }
         ></input>
       </td>
       <td className={styles.td}>

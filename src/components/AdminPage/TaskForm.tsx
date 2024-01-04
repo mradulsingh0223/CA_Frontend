@@ -10,19 +10,18 @@ function TaskForm({ token }: { token: string | null }) {
   const [message, setMessage] = useState<string>('');
 
   function handleSubmit() {
+    let fd = new FormData();
+    fd.append('title', title);
+    fd.append('description', description);
+    fd.append('points', points.toString());
+    fd.append('deadline', deadline);
+    setMessage('loading...');
     fetch(BACKEND_URL + 'tasks/', {
       method: 'POST',
       headers: {
-        'content-type': 'application/json',
-        'content-length': '0',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        title,
-        description,
-        points,
-        deadline,
-      }),
+      body: fd,
     })
       .then((res) => res.json())
       .then((data) => {
@@ -32,6 +31,7 @@ function TaskForm({ token }: { token: string | null }) {
         setDescription('');
         setPoints(0);
         setDeadline('');
+        setMessage('Task added successfully.');
       })
       .catch((err) => {
         console.log(err);
@@ -74,10 +74,12 @@ function TaskForm({ token }: { token: string | null }) {
         <label>
           Deadline:
           <input
-            type='datetime-local'
+            type='date'
             className={styles.input}
-            value={deadline}
-            onChange={(e) => setDeadline(e.target.value)}
+            value={deadline.split('T')[0]}
+            onChange={(e) =>
+              setDeadline(new Date(e.target.value).toISOString())
+            }
           />
         </label>
         <p
