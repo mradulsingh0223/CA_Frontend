@@ -79,7 +79,10 @@ const Dashboard: React.FC<Props> = ({ completedTasks }) => {
             `${fetchedDetails.userprofile.first_name} ${fetchedDetails.userprofile.last_name}`
           );
           setPoints(fetchedDetails.userprofile.points);
-          setCaId(fetchedDetails.userprofile.unique_id.slice(-8));
+          console.log(fetchedDetails.referral_code.split('_'))
+          const caid= fetchedDetails.referral_code.split('_');
+          const id= caid[0]+"_"+caid[1];
+          setCaId(id);
         } else if (response.status === 401) {
           setModalContent('Login Again');
           setShowModal(true);
@@ -213,7 +216,7 @@ const Dashboard: React.FC<Props> = ({ completedTasks }) => {
                 <p className='text-white select-none self-center text-[20px]'>
                   Rank:{rank}
                 </p>
-                <p className='text-white select-none self-center text-[15px]'>
+                <p className='text-white select-none self-center text-[13px]'>
                   CA Id: {caId}
                 </p>
               </div>
